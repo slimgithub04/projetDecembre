@@ -1,0 +1,71 @@
+{% extends 'reclamation/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card animated-section">
+            <div class="card-body text-center">
+                <i class="fas fa-file-alt fa-3x text-primary mb-3"></i>
+                <h3 class="card-title">Formulaire de Réclamation</h3>
+                <p class="card-text">Soumettre une nouvelle réclamation rapidement et facilement.</p>
+                <a href="{% url 'reclamation_create' %}" class="btn btn-primary">
+                    <i class="fas fa-plus-circle"></i> Créer une Réclamation
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card animated-section">
+            <div class="card-body text-center">
+                <i class="fas fa-history fa-3x text-success mb-3"></i>
+                <h3 class="card-title">Historique</h3>
+                <p class="card-text">Consultez vos réclamations précédentes et leur statut.</p>
+                <a href="{% url 'liste' %}" class="btn btn-success">
+                    <i class="fas fa-list"></i> Voir l'Historique
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card animated-section">
+            <div class="card-body text-center">
+                <i class="fas fa-book fa-3x text-info mb-3"></i>
+                <h3 class="card-title">Règles & Documentation</h3>
+                <p class="card-text">Comprendre le processus et les lignes directrices.</p>
+                <a href="{% url 'download_documentation' %}" class="btn btn-info text-white">
+                    <i class="fas fa-file-pdf"></i> Consulter
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="mt-4 animated-section">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">
+                <i class="fas fa-info-circle"></i> Informations Importantes
+            </h4>
+        </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <i class="fas fa-clock text-warning"></i> 
+                    Les réclamations doivent être soumises dans les 48 heures suivant l'incident.
+                </li>
+                <li class="list-group-item">
+                    <i class="fas fa-file-upload text-primary"></i> 
+                    Fournissez des preuves si nécessaire (captures d'écran, documents).
+                </li>
+                <li class="list-group-item">
+                    <i class="fas fa-exclamation-triangle text-danger"></i> 
+                    Les réclamations abusives peuvent entraîner des sanctions.
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'Home/base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1>Invite Member to {{ carpool.name }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <select name="user" class="form-control" required>
+                    <option value="">Select a user to invite</option>
+                    {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.email }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Send Invitation</button>
+        </form>
+        <a href="{% url 'carpool_detail' carpool.id %}" class="btn btn-secondary mt-3">Back to Carpool Details</a>
+    </div>
+    {% endblock %}
+

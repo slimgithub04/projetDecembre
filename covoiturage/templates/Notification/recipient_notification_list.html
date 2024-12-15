@@ -1,0 +1,98 @@
+{% extends 'Home/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Notification Created Button -->
+    <div class="d-flex justify-content-between mb-4">
+        <a href="{% url 'notification_list' %}">
+            <button class="btn btn-info">Notification created</button>
+        </a>
+    </div>
+
+    <!-- Messages (if any) -->
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Hey!</strong> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Page Title -->
+    <h1>Your Received Notifications</h1>
+
+
+
+    <!-- Filter Form -->
+    <form method="GET" class="mb-4">
+        <div class="input-group mb-3">
+            <!-- Search Field -->
+            <input type="text" name="search" class="form-control" placeholder="Search by message..." value="{{ search }}">
+        </div>
+        <div class="input-group mb-3">
+            <!-- Status Filter -->
+            <select name="status_filter" class="form-select me-2">
+                <option value="">All Statuses</option>
+                <option value="sent" {% if status_filter == 'sent' %}selected{% endif %}>Sent</option>
+                <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="failed" {% if status_filter == 'failed' %}selected{% endif %}>Failed</option>
+            </select>
+            <!-- Type Filter -->
+            <select name="type_filter" class="form-select me-2">
+                <option value="">All Types</option>
+                <option value="info" {% if type_filter == 'info' %}selected{% endif %}>Information</option>
+                <option value="warn" {% if type_filter == 'warn' %}selected{% endif %}>Warning</option>
+                <option value="alert" {% if type_filter == 'alert' %}selected{% endif %}>Alert</option>
+            </select>
+            <!-- Filter Button -->
+            <button type="submit" class="btn btn-success">Filter</button>
+        </div>
+    </form>
+
+    <!-- Notifications Table -->
+    {% if notifications1 %}
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Message</th>
+                <th>Status</th>
+                <th>Recipient</th>
+                <th>Sent On</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for notification in notifications1 %}
+            <tr>
+                <td>{{ notification.type_notification }}</td>
+                <td>{{ notification.message|truncatechars:50 }}</td>
+                <td>{{ notification.status_notification }}</td>
+                <td>{{ notification.recipient.email }}</td>
+                <td>{{ notification.date_sent }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between mt-4">
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        <div>
+            {% if page_obj.has_previous %}
+                <a href="?page=1&search={{ search }}&status_filter={{ status_filter }}&type_filter={{ type_filter }}" class="btn btn-link">First</a>
+                <a href="?page={{ page_obj.previous_page_number }}&search={{ search }}&status_filter={{ status_filter }}&type_filter={{ type_filter }}" class="btn btn-link">Previous</a>
+            {% endif %}
+            <span> | </span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&search={{ search }}&status_filter={{ status_filter }}&type_filter={{ type_filter }}" class="btn btn-link">Next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}&search={{ search }}&status_filter={{ status_filter }}&type_filter={{ type_filter }}" class="btn btn-link">Last</a>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+        <p>You have no notifications.</p>
+    {% endif %}
+</div>
+{% endblock %}

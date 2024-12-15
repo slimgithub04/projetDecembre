@@ -1,0 +1,131 @@
+{% extends 'evaluation/base3.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css/animate.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid evaluation-update-container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card evaluation-card animate__animated animate__fadeIn">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-route me-2"></i>Mise à jour de votre Expérience de Covoiturage
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <form id="evaluationForm" method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h4 class="text-center mb-4">Note Globale</h4>
+                                <div class="rating-container">
+                                    <div class="star-rating">
+                                        {% for i in "12345" %}
+                                            <input type="radio" name="rating" value="{{ 6|subtract:forloop.counter }}" id="star{{ 6|subtract:forloop.counter }}" {% if evaluation.note == 6|subtract:forloop.counter %}checked{% endif %}>
+                                            <label for="star{{ 6|subtract:forloop.counter }}" class="star-label"></label>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="rating-value text-center mt-3">
+                                        <span id="ratingValue">{{ evaluation.note|default:0 }}</span>/5
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h4 class="text-center mb-3">Détails de l'Expérience</h4>
+                                <div class="experience-sliders">
+                                    <div class="slider-group">
+                                        <label>Confort du Trajet</label>
+                                        <input type="range" class="form-range experience-slider" 
+                                               id="comfortSlider" 
+                                               name="comfort" 
+                                               min="0" max="10" 
+                                               value="{{ evaluation.comfort|default:5 }}">
+                                        <div class="slider-value" id="comfortValue">
+                                            {{ evaluation.comfort|default:5 }}/10
+                                        </div>
+                                    </div>
+
+                                    <div class="slider-group">
+                                        <label>Ponctualité du Conducteur</label>
+                                        <input type="range" class="form-range experience-slider" 
+                                               id="punctualitySlider" 
+                                               name="punctuality" 
+                                               min="0" max="10" 
+                                               value="{{ evaluation.punctuality|default:5 }}">
+                                        <div class="slider-value" id="punctualityValue">
+                                            {{ evaluation.punctuality|default:5 }}/10
+                                        </div>
+                                    </div>
+
+                                    <div class="slider-group">
+                                        <label>Communication</label>
+                                        <input type="range" class="form-range experience-slider" 
+                                               id="communicationSlider" 
+                                               name="communication" 
+                                               min="0" max="10" 
+                                               value="{{ evaluation.communication|default:5 }}">
+                                        <div class="slider-value" id="communicationValue">
+                                            {{ evaluation.communication|default:5 }}/10
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label for="commentaire" class="form-label">Commentaire Détaillé</label>
+                                <textarea class="form-control" id="commentaire" name="commentaire" rows="4" 
+                                          placeholder="Partagez les détails de votre expérience...">{{ evaluation.commentaire|default:"" }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons text-center">
+                            <button type="submit" class="btn btn-primary btn-lg me-3">
+                                <i class="fas fa-save me-2"></i>Enregistrer
+                            </button>
+                            <a href="{% url 'evaluation_detail' %}" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-times me-2"></i>Annuler
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Star Rating Interaction
+    const stars = document.querySelectorAll('.star-rating input');
+    const ratingValue = document.getElementById('ratingValue');
+    
+    stars.forEach(star => {
+        star.addEventListener('change', function() {
+            ratingValue.textContent = this.value;
+        });
+    });
+
+    // Slider Interactions
+    const sliders = document.querySelectorAll('.experience-slider');
+    
+    sliders.forEach(slider => {
+        const valueDisplay = document.getElementById(slider.id + 'Value');
+        
+        slider.addEventListener('input', function() {
+            valueDisplay.textContent = this.value + '/10';
+        });
+    });
+});
+</script>
+{% endblock %}

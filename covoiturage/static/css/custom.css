@@ -1,0 +1,87 @@
+/* Custom CSS for Evaluation System */
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 30px;
+    margin-top: 30px;
+}
+
+/* Assure-toi que les liens ont une couleur différente */
+.navbar-nav .nav-link {
+    color: #f8f9fa !important; /* Blanc clair pour contraster avec le fond sombre */
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ffc107 !important; /* Couleur d'accentuation sur survol (jaune) */
+}
+/* General Slider Styling */
+input[type="range"] {
+    width: 100%;
+    height: 10px;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+    border-radius: 5px;
+    -webkit-appearance: none;
+}
+
+input[type="range"]:hover {
+    opacity: 1;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #3f51b5;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Specific Slider Styles */
+#note-slider {
+    background: linear-gradient(to right, #4CAF50, #FFC107, #F44336);
+}
+
+#note-slider1 {
+    background: linear-gradient(to right, #4CAF50, #FFC107, #F44336);
+}
+
+#note-slider2 {
+    background: linear-gradient(to right, #4CAF50, #FFC107, #F44336);
+}
+
+/* Form Styling */
+.btn-primary {
+    background-color: #3f51b5;
+    border-color: #3f51b5;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #2196f3;
+    border-color: #2196f3;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+}
+
+/* Alert Styling */
+.alert-danger {
+    background-color: #ffebee;
+    border-color: #f44336;
+    color: #d32f2f;
+}

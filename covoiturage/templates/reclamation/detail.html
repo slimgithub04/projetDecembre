@@ -1,0 +1,42 @@
+{% extends 'reclamation/base3.html' %}
+{% load static %}
+{% block title %}Détails de la Réclamation{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header text-center">
+        <h4>Détails de la Réclamation</h4>
+    </div>
+    <div class="card-body">
+        <div class="reclamation-details">
+            <h5 class="mb-4">Informations Principales</h5>
+            <p><label>Nom :</label> {{ reclamation.nom_prenom }}</p>
+            <p><label>Statut :</label> 
+                {{ reclamation.statut }}
+            </p>
+            <p><label>Téléphone :</label> {{ reclamation.numero_telephone }}</p>
+            
+            <hr>
+            <h5 class="mt-4">Détails de l'Incident</h5>
+            <p><label>Date :</label> {{ reclamation.date_incident }}</p>
+            <p><label>Lieu :</label> {{ reclamation.lieu_incident }}</p>
+            <p><label>Description :</label> {{ reclamation.description_incident }}</p>
+
+            {% if reclamation.preuve %}
+            <hr>
+            <h5>Preuves</h5>
+            {% if reclamation.preuve.name|slice:"-4:" == ".pdf" %}
+                <a href="{{ reclamation.preuve.url }}" class="btn btn-success" target="_blank">Voir le PDF</a>
+            {% else %}
+                <img src="{{ reclamation.preuve.url }}" alt="Preuve" class="img-fluid rounded">
+            {% endif %}
+            {% endif %}
+
+            <hr>
+            <div class="text-center">
+                <a href="{% url 'liste' %}" class="btn btn-secondary">Retour à la liste</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+:root {
+    --bg-pattern: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%);
+}
+
+.bg-pattern {
+    background-image: var(--bg-pattern);
+}
+
+.dark .bg-pattern {
+    background-image: linear-gradient(135deg, rgba(0,0,0,0.2) 0%, transparent 60%);
+}
+
+.animate-fade-in {
+    animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+
+

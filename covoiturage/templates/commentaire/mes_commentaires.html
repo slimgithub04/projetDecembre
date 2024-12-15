@@ -1,0 +1,87 @@
+{% extends 'commentaire/base2.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/mes_commentaires.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mes-commentaires-container">
+    <div class="commentaires-header">
+        <h2>Mes Contributions</h2>
+        <p>Votre journal personnel de pensées et d'interactions</p>
+    </div>
+
+    {% if commentaires %}
+        <div class="commentaires-grid">
+            {% for commentaire in commentaires %}
+            <div class="commentaire-card animate__animated animate__fadeIn">
+                <div class="commentaire-content">
+                    <div class="commentaire-text">
+                        {{ commentaire.texte }}
+                    </div>
+                    <div class="commentaire-footer">
+                        <span class="commentaire-date">
+                            <i class="fas fa-clock"></i> 
+                            {{ commentaire.date_commentaire|date:"d/m/Y à H:i" }}
+                        </span>
+                        <div class="commentaire-actions">
+                            <!-- Bouton de modification -->
+                            <a href="{% url 'update_commentaire' commentaire.id %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-edit"></i>
+                            </a>
+
+                            <!-- Formulaire pour la suppression -->
+                            <form method="POST" action="{% url 'supprimer_commentaire' commentaire.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Bloc des émotions (emoji) en fonction du sentiment -->
+                    <div class="commentaire-sentiment">
+                        {% if commentaire.sentiment == "NEUTRAL" %}
+                            <span>😐</span>
+                        {% elif commentaire.sentiment == "POSITIVE" %}
+                            <span>😊</span>
+                        {% elif commentaire.sentiment == "NEGATIVE" %}
+                            <span>😢</span>
+                        {% else %}
+                            <span>😐</span> <!-- Par défaut un emoji neutre -->
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+    <div class="no-commentaires">
+        <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" fill="none" viewBox="0 0 24 24" stroke="#007bff" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" 
+                  d="M8 10h8M8 14h4M21 12c0 3.866-3.582 7-8 7a8.969 8.969 0 01-4.472-1.167L3 19l1.29-4.226A7.97 7.97 0 013 12c0-3.866 3.582-7 8-7s8 3.134 8 7z" />
+        </svg>
+        <p style="font-size: 1.2rem; color: #6c757d;">Votre espace d'expression est encore vierge. Commencez à partager vos pensées !</p>
+    </div>
+    {% endif %}
+
+    <div class="commentaires-actions">
+        <a href="{% url 'create_commentaire' %}" class="btn btn-primary btn-lg">
+            <i class="fas fa-plus-circle"></i> Nouveau commentaire
+        </a>
+        <div class="secondary-actions">
+            <a href="{% url 'home1' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-home"></i> Accueil
+            </a>
+            <a href="{% url 'tous_les_commentaires' %}" class="btn btn-outline-success">
+                <i class="fas fa-comments"></i> Tous les commentaires
+            </a>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script src="{% static 'js/mes_commentaires.js' %}"></script>
+{% endblock %}
+{% endblock %}

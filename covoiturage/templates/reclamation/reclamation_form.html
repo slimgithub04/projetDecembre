@@ -1,0 +1,319 @@
+{% extends 'reclamation/base1.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg animate__animated animate__fadeIn">
+        <div class="card-header">
+            <h2 class="text-center mb-0">
+                <i class="fas fa-file-alt me-2"></i>Formulaire de Réclamation
+            </h2>
+        </div>
+        <div class="card-body">
+            <form id="reclamationForm" method="POST" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Type de Participation</label>
+                        <div class="d-flex">
+                            <div class="form-check me-3">
+                                <input class="form-check-input" type="radio" name="statut_participation" 
+                                       id="participation_individuelle" value="individuel" required checked>
+                                <label class="form-check-label" for="participation_individuelle">
+                                    Individuelle
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="statut_participation" 
+                                       id="participation_groupe" value="groupe">
+                                <label class="form-check-label" for="participation_groupe">
+                                    Groupe
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3" id="groupe_selection" style="display:none;">
+                        <label class="form-label">Sélectionner un Groupe</label>
+                        {{ form.groupe }}
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nom et Prénom</label>
+                        <p></p>
+                        {{ form.nom_prenom }}
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Numéro de Téléphone</label>
+                        <p></p>
+                        {{ form.numero_telephone }}
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Statut Personnel</label>
+                        {{ form.statut_personnel }}
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Date de l'Incident</label>
+                        {{ form.date_incident }}
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Heure de l'Incident</label>
+                        {{ form.heure_incident }}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Lieu de l'Incident</label>
+                    {{ form.lieu_incident }}
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Description Détaillée</label>
+                    <select id="language-select" class="form-select" style="max-width: 120px;">
+                        <option value="fr-FR">Français</option>
+                        <option value="en-US">English</option>
+                        <option value="es-ES">Español</option>
+                        <option value="ar-SA">العربية</option>
+                        <option value="ar-TN">Arabic (Tunisia)</option>
+                        <option value="zh-CN">中文</option>
+                        <option value="de-DE">Deutsch</option>
+                        <option value="it-IT">Italiano</option>
+                        <option value="pt-BR">Português</option>
+                    </select>
+                    <div class="input-group">
+                        {{ form.description_incident }}
+                        
+                        <button type="button" id="start-voice-input" class="btn btn-secondary" title="Dictée vocale">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button type="button" id="stop-voice-input" class="btn btn-danger" style="display:none;" title="Arrêter l'enregistrement">
+                            <i class="fas fa-stop"></i>
+                        </button>
+                    </div>
+                    <small id="voice-status" class="form-text text-muted"></small>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Preuve Documentaire</label>
+                        <div class="input-group">
+                            {{ form.preuve }}
+                            <span class="input-group-text">
+                                <i class="fas fa-upload"></i>
+                            </span>
+                        </div>
+                        <small class="form-text text-muted">
+                            Formats acceptés : PDF, JPG, PNG, DOC (max 5 Mo)
+                        </small>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Ajouter un Témoin ?</label>
+                        <div class="d-flex">
+                            <div class="form-check me-3">
+                                <input class="form-check-input" type="radio" name="temoin_option" 
+                                       id="temoin_non" value="non" checked>
+                                <label class="form-check-label" for="temoin_non">Non</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="temoin_option" 
+                                       id="temoin_oui" value="oui">
+                                <label class="form-check-label" for="temoin_oui">Oui</label>
+                            </div>
+                        </div>
+                        
+                        <div id="temoin_details" style="display:none;" class="mt-2">
+                            <div class="row">
+                                <div class="col-md-12 mb-2">
+                                    <input type="text" class="form-control" 
+                                           name="temoin_nom" placeholder="Nom du témoin">
+                                </div>
+                                <div class="col-md-12 mb-2">
+                                    <input type="text" class="form-control" 
+                                           name="temoin_contact" placeholder="Contact du témoin">
+                                </div>
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control" 
+                                           name="temoin_role" placeholder="Rôle du témoin">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-paper-plane me-2"></i>Soumettre la Réclamation
+                    </button>
+                </div>
+            </form>
+            
+            {% if form.errors %}
+            <div class="alert alert-danger mt-3 animate__animated animate__shake">
+                <h4>Erreurs dans le formulaire :</h4>
+                <ul>
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <li>{{ field }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Existing group and witness selection scripts remain the same
+    const participationRadios = document.querySelectorAll('input[name="statut_participation"]');
+    const groupeSelection = document.getElementById('groupe_selection');
+    
+    participationRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            groupeSelection.style.display = this.value === 'groupe' ? 'block' : 'none';
+            groupeSelection.classList.toggle('animate__animated', true);
+            groupeSelection.classList.toggle('animate__fadeIn', true);
+        });
+    });
+    
+    const temoinRadios = document.querySelectorAll('input[name="temoin_option"]');
+    const temoinDetails = document.getElementById('temoin_details');
+    
+    temoinRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            temoinDetails.style.display = this.value === 'oui' ? 'block' : 'none';
+            temoinDetails.classList.toggle('animate__animated', true);
+            temoinDetails.classList.toggle('animate__fadeIn', true);
+        });
+    });
+
+    // Enhanced Voice Input Functionality
+    const startVoiceInputBtn = document.getElementById('start-voice-input');
+    const stopVoiceInputBtn = document.getElementById('stop-voice-input');
+    const descriptionTextarea = document.getElementById('id_description_incident');
+    const voiceStatus = document.getElementById('voice-status');
+    const languageSelect = document.getElementById('language-select');
+    
+    // Check browser support for Web Speech API
+    if ('webkitSpeechRecognition' in window) {
+        const recognition = new webkitSpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+
+        let finalTranscript = '';
+        
+        // Language selection handling
+        recognition.lang = languageSelect.value === 'auto' ? navigator.language : languageSelect.value;
+        languageSelect.addEventListener('change', function() {
+            recognition.lang = this.value === 'auto' ? navigator.language : this.value;
+        });
+        
+        startVoiceInputBtn.addEventListener('click', function() {
+            try {
+                finalTranscript = ''; // Reset transcript
+                recognition.start();
+                startVoiceInputBtn.style.display = 'none';
+                stopVoiceInputBtn.style.display = 'inline-block';
+                voiceStatus.textContent = 'Écoute en cours... Parlez maintenant.';
+            } catch (error) {
+                console.error('Voice recognition error:', error);
+                voiceStatus.textContent = 'Erreur de reconnaissance vocale.';
+            }
+        });
+        
+        stopVoiceInputBtn.addEventListener('click', function() {
+            recognition.stop();
+        });
+        
+        recognition.onresult = function(event) {
+            let interimTranscript = '';
+            
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    finalTranscript += event.results[i][0].transcript;
+                } else {
+                    interimTranscript += event.results[i][0].transcript;
+                }
+            }
+            
+            // Optional: Display interim results
+            voiceStatus.textContent = `En cours: ${interimTranscript}`;
+        };
+        
+        recognition.onend = function() {
+            // Only add to textarea if something was actually transcribed
+            if (finalTranscript.trim()) {
+                const currentText = descriptionTextarea.value;
+                const confirmAppend = confirm('Voulez-vous ajouter le texte vocal à la description existante ?');
+                
+                descriptionTextarea.value = confirmAppend 
+                    ? (currentText + ' ' + finalTranscript).trim() 
+                    : finalTranscript;
+                
+                voiceStatus.textContent = 'Transcription terminée.';
+            } else {
+                voiceStatus.textContent = 'Aucune transcription détectée.';
+            }
+            
+            startVoiceInputBtn.style.display = 'inline-block';
+            stopVoiceInputBtn.style.display = 'none';
+        };
+        
+        recognition.onerror = function(event) {
+            console.error('Speech recognition error:', event.error);
+            voiceStatus.textContent = 'Erreur: ' + event.error;
+            
+            startVoiceInputBtn.style.display = 'inline-block';
+            stopVoiceInputBtn.style.display = 'none';
+        };
+    } else {
+        // Disable voice input if not supported
+        startVoiceInputBtn.disabled = true;
+        startVoiceInputBtn.setAttribute('title', 'Reconnaissance vocale non supportée');
+    }
+
+    // Form Validation (same as before)
+    const form = document.getElementById('reclamationForm');
+    form.addEventListener('submit', function(event) {
+        let isValid = true;
+        const requiredFields = form.querySelectorAll('[required]');
+
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                field.classList.remove('is-invalid');
+            }
+        });
+
+        // File size validation
+        const fileInput = document.querySelector('input[type="file"]');
+        if (fileInput.files.length > 0) {
+            const fileSize = fileInput.files[0].size / 1024 / 1024; // in MB
+            if (fileSize > 5) {
+                alert('La taille du fichier ne doit pas dépasser 5 Mo');
+                event.preventDefault();
+                isValid = false;
+            }
+        }
+
+        if (!isValid) {
+            event.preventDefault();
+            const firstInvalidField = form.querySelector('.is-invalid');
+            firstInvalidField.focus();
+        }
+    });
+});
+</script>
+{% endblock %}

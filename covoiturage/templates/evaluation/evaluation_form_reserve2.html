@@ -1,0 +1,138 @@
+{% extends 'evaluation/base4.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <h2>{% if evaluation %}Modifier{% else %}Ajouter{% endif %} une évaluation</h2>
+    
+    <!-- Affiche les détails du trajet -->
+    <p><strong>Trajet :</strong> {{ trajet }}</p>
+    
+    <form method="POST">
+        {% csrf_token %}
+        
+        <!-- Slider pour la note du confort -->
+        <div class="mt-4">
+            <label for="note-slider">Confort du trajet  :</label>
+            <input type="range" id="note-slider" name="note" min="0" max="10" step="0.1" value="5"
+                   oninput="UpdateValue(this.value)">
+            <span id="slider-value" class="ms-3">50</span>
+        </div>
+
+        <!-- Slider pour la ponctualité -->
+        <div class="mt-4">
+            <label for="note-slider1">Ponctualité :</label>
+            <input type="range" id="note-slider1" name="note" min="0" max="10" step="0.1" value="5"
+                   oninput="UpdateValue1(this.value)">
+            <span id="slider-value1" class="ms-3">5</span>
+        </div>
+
+        <!-- Slider pour la communication -->
+        <div class="mt-4">
+            <label for="note-slider2">Communication :</label>
+            <input type="range" id="note-slider2" name="note" min="0" max="10" step="0.1" value="5"
+                   oninput="UpdateValue2(this.value)">
+            <span id="slider-value2" class="ms-3">5</span>
+        </div>
+
+        <!-- Bouton de soumission -->
+        <button type="submit" class="btn btn-primary mt-4">
+            {% if evaluation %}Modifier{% else %}Ajouter{% endif %}
+        </button>
+    </form>
+
+    <!-- Affichage des erreurs -->
+    {% if form.errors %}
+    <div class="alert alert-danger mt-3">
+        <ul>
+            {% for error in form.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- Script pour afficher la valeur du slider et mettre à jour le style -->
+{% block extra_js %}
+<script>
+    function UpdateValue(value) {
+        const sliderValue = document.getElementById('slider-value');
+        const slider = document.getElementById('note-slider');
+        
+        // Mise à jour de la valeur affichée
+        sliderValue.textContent = value;
+        
+        // Changement de la couleur du slider basé sur la valeur
+        const gradient = `linear-gradient(to right, 
+            #4CAF50 0%, 
+            #4CAF50 ${value * 10}%, 
+            #FFC107 ${value * 10}%, 
+            #F44336 100%)`;
+        slider.style.background = gradient;
+    }
+
+    function UpdateValue1(value) {
+        const sliderValue = document.getElementById('slider-value1');
+        const slider = document.getElementById('note-slider1');
+        
+        // Mise à jour de la valeur affichée
+        sliderValue.textContent = value;
+        
+        // Changement de la couleur du slider basé sur la valeur
+        const gradient = `linear-gradient(to right, 
+            #4CAF50 0%, 
+            #4CAF50 ${value * 10}%, 
+            #FFC107 ${value * 10}%, 
+            #F44336 100%)`;
+        slider.style.background = gradient;
+        console.log("hello")
+    }
+
+    function UpdateValue2(value) {
+        const sliderValue = document.getElementById('slider-value2');
+        const slider = document.getElementById('note-slider2');
+        
+        // Mise à jour de la valeur affichée
+        sliderValue.textContent = value;
+        
+        // Changement de la couleur du slider basé sur la valeur
+        const gradient = `linear-gradient(to right, 
+            #4CAF50 0%, 
+            #4CAF50 ${value * 10}%, 
+            #FFC107 ${value * 10}%, 
+            #F44336 100%)`;
+        slider.style.background = gradient;
+    }
+
+    // Ajout d'écouteurs d'événements pour initialiser et mettre à jour les sliders
+    document.addEventListener('DOMContentLoaded', function() {
+        const slider = document.getElementById('note-slider');
+        const slider1 = document.getElementById('note-slider1');
+        const slider2 = document.getElementById('note-slider2');
+
+        // Configuration initiale de la couleur
+        if (slider) {
+            updateValue(slider.value);
+            slider.addEventListener('input', function() {
+                updateValue(this.value);
+            });
+        }
+        
+        if (slider1) {
+            updateValue1(slider1.value);
+            slider1.addEventListener('input', function() {
+                updateValue1(this.value);
+            });
+        }
+
+        if (slider2) {
+            updateValue2(slider2.value);
+            slider2.addEventListener('input', function() {
+                updateValue2(this.value);
+            });
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

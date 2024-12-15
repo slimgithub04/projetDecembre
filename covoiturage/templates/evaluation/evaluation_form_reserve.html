@@ -1,0 +1,54 @@
+{% extends 'evaluation/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>{% if evaluation %}Modifier{% else %}Ajouter{% endif %} une évaluation</h2>
+    
+    <!-- Affiche les détails du trajet -->
+    <p><strong>Trajet :</strong> {{ trajet }}</p>
+    
+    <form method="POST">
+        {% csrf_token %}
+        
+        <!-- Slider pour la note -->
+        <div class="mt-4">
+            <label for="note-slider">Note :</label>
+            <input type="range" id="note-slider" name="note" min="0" max="100" step="1" value="50"
+                   oninput="updateValue(this.value)">
+            <span id="slider-value" class="ms-3">50</span>
+        </div>
+
+        <div class="mt-4">
+            <a href="{% url 'create_commentaire' %}" class="btn btn-secondary">
+                Ajouter un commentaire
+            </a>
+        </div>
+
+        <!-- Bouton de soumission -->
+        <button type="submit" class="btn btn-primary mt-4">
+            {% if evaluation %}Modifier{% else %}Ajouter{% endif %}
+        </button>
+    </form>
+
+    <!-- Affichage des erreurs -->
+    {% if form.errors %}
+    <div class="alert alert-danger mt-3">
+        <ul>
+            {% for error in form.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Nouveau bouton pour le formulaire de commentaire -->
+    
+</div>
+
+<!-- Script pour afficher la valeur du slider -->
+<script>
+    function updateValue(value) {
+        document.getElementById('slider-value').textContent = value;
+    }
+</script>
+{% endblock %}

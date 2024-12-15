@@ -1,0 +1,98 @@
+{% extends "penality/base.html" %}
+{% load static %}
+
+{% block content %}
+<div x-data="{ darkMode: false }" 
+     x-init="darkMode = localStorage.getItem('darkMode') === 'true'"
+     x-bind:class="{ 'dark': darkMode }">
+    <div class="penalites-container bg-white dark:bg-gray-800 shadow-2xl rounded-2xl overflow-hidden">
+        <!-- Back Button - Positioned absolutely in the top-left corner -->
+        <div class="absolute top-4 left-4 z-10">
+            <a href="{% url 'home' %}" 
+               class="bg-white dark:bg-gray-700 text-gray-800 dark:text-white p-2 rounded-full shadow-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+            </a>
+        </div>
+
+        <div class="relative h-64 bg-gradient-to-r from-blue-500 to-purple-600">
+            <div class="absolute inset-0 opacity-75 bg-pattern"></div>
+            <div class="absolute inset-0 flex flex-col justify-center items-center text-center text-white p-6">
+                <h1 class="text-4xl font-extrabold mb-4 animate-fade-in">Espace des Pénalités</h1>
+                <p class="text-xl font-light tracking-wide">Gérez et suivez vos pénalités avec précision</p>
+            </div>
+        </div>
+
+        <div class="p-8 space-y-6">
+            <div class="flex justify-between items-center mb-6">
+                <a href="{% url 'download_documentation' %}" 
+                   class="btn btn-outline-primary flex items-center space-x-2 hover:bg-blue-50 transition duration-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <span>Règlement Général</span>
+                </a>
+
+                <button @click="darkMode = !darkMode" 
+                        x-on:click="localStorage.setItem('darkMode', darkMode)"
+                        class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+                    <svg x-show="!darkMode" class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-6 h-6 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <a href="{% url 'historique_penalites' %}" 
+                   class="card-hover transform hover:-translate-y-2 transition duration-300 ease-in-out">
+                    <div class="bg-blue-100 dark:bg-blue-900 p-6 rounded-xl text-center flex flex-col items-center">
+                        <div class="mb-4 w-16 h-16 bg-blue-200 dark:bg-blue-800 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600 dark:text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-blue-800 dark:text-blue-200">Liste des Pénalités</h3>
+                    </div>
+                </a>
+
+                <a href="{% url 'download_documentation' %}" 
+                   class="card-hover transform hover:-translate-y-2 transition duration-300 ease-in-out">
+                    <div class="bg-green-100 dark:bg-green-900 p-6 rounded-xl text-center flex flex-col items-center">
+                        <div class="mb-4 w-16 h-16 bg-green-200 dark:bg-green-800 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600 dark:text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-green-800 dark:text-green-200">Règlement Général</h3>
+                    </div>
+                </a>
+
+                <a href="{% url 'dashboard' %}" 
+                   class="card-hover transform hover:-translate-y-2 transition duration-300 ease-in-out">
+                    <div class="bg-purple-100 dark:bg-purple-900 p-6 rounded-xl text-center flex flex-col items-center">
+                        <div class="mb-4 w-16 h-16 bg-purple-200 dark:bg-purple-800 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-600 dark:text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-purple-800 dark:text-purple-200">Dashboard</h3>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="bg-dark text-white text-center py-3 mt-4">
+    <div class="container">
+        <p class="mb-0">
+            <i class="fas fa-shield-alt"></i> 
+            © 2024 Espace Des Penalités. Tous droits réservés.
+        </p>
+    </div>
+</footer>
+{% endblock %}

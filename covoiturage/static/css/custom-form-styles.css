@@ -1,0 +1,145 @@
+/* Enhanced Form Styles */
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --light-background: #f8f9fa;
+    --white: #ffffff;
+    --input-border-color: #ced4da;
+    --input-focus-color: #80bdff;
+}
+
+body {
+    background-color: var(--light-background);
+    font-family: 'Roboto', 'Arial', sans-serif;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+}
+
+.card {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--primary-color), #0056b3);
+    color: var(--white);
+    padding: 20px;
+    text-align: center;
+    border-bottom: none;
+}
+
+.card-header h2 {
+    margin: 0;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-header i {
+    margin-right: 15px;
+    font-size: 1.5em;
+}
+
+.card-body {
+    padding: 30px;
+    background-color: var(--white);
+}
+
+/* Enhanced Form Elements */
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+    border: 1.5px solid var(--input-border-color);
+    border-radius: 8px;
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--input-focus-color);
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Radio and Checkbox Styles */
+.form-check-label {
+    user-select: none;
+    cursor: pointer;
+}
+
+.form-check-input:hover {
+    cursor: pointer;
+}
+
+/* File Input Enhancement */
+.input-group .form-control[type="file"] {
+    border-right: none;
+}
+
+.input-group-text {
+    background-color: transparent;
+    border-left: none;
+    color: var(--secondary-color);
+}
+
+/* Submit Button */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), #0056b3);
+    border: none;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 14px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary i {
+    margin-right: 10px;
+}
+
+/* Error Messages */
+.alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+    border-radius: 8px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .card {
+        margin: 15px;
+    }
+    
+    .card-body {
+        padding: 20px;
+    }
+}
+
+/* Subtle Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}

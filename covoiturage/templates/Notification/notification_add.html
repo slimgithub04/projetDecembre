@@ -1,0 +1,59 @@
+{% extends 'Home/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Title Section -->
+    <h1>{% if notification %}Edit Notification{% else %}Add Notification{% endif %}</h1>
+
+    <!-- Notification Form -->
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Notification Type -->
+        <div class="mb-3">
+            <label for="type_notification" class="form-label">Notification Type:</label>
+            <select name="type_notification" class="form-select">
+                <option value="info">Information</option>
+                <option value="warn">Warning</option>
+                <option value="alert">Alert</option>
+                <option value="Invitation">Invitation</option>
+                <option value="Accept">Accept Application</option>
+                <option value="Decline">Decline Application</option>
+                <option value="Application">Application</option>
+            </select>
+        </div>
+
+        <!-- Message Field -->
+        <div class="mb-3">
+            <label for="message" class="form-label">Message:</label>
+            <textarea name="message" class="form-control" rows="4" required></textarea>
+        </div>
+
+        <!-- Status -->
+        <div class="mb-3">
+            <label for="status_notification" class="form-label">Status:</label>
+            <select name="status_notification" class="form-select">
+                <option value="sent">Sent</option>
+                <option value="pending">Pending</option>
+                <option value="failed">Failed</option>
+            </select>
+        </div>
+
+        <!-- Recipient -->
+        <div class="mb-3">
+            <label for="recipient" class="form-label">Recipient:</label>
+            <select name="recipient" class="form-select" required>
+                {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.email }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Add Notification</button>
+    </form>
+
+    <!-- Back Link -->
+    <a href="{% url 'notification_list' %}" class="btn btn-link mt-3">Back to Notification List</a>
+</div>
+{% endblock %}

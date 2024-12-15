@@ -1,0 +1,58 @@
+{% extends 'commentaire/base1.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/commentaires.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container commentaires-container">
+    <div class="commentaires-header">
+        <h2>Mur des Commentaires</h2>
+        <p>Explorez les conversations et insights de notre communauté</p>
+    </div>
+
+    {% if commentaires %}
+        <div class="commentaires-grid">
+            {% for commentaire in commentaires %}
+                <div class="commentaire-card animate__animated animate__fadeIn">
+                    <div class="commentaire-content">
+                        <div class="commentaire-text">
+                            {{ commentaire.texte }}
+                        </div>
+                        <div class="commentaire-footer">
+                            <span class="commentaire-date">
+                                <i class="fas fa-clock"></i> 
+                                {{ commentaire.date_commentaire|date:"d/m/Y à H:i" }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-commentaires">
+            <img src="{% static 'image/empty-stat' %}" alt="Aucun commentaire">
+            <p>Soyez le premier à laisser une trace !</p>
+        </div>
+    {% endif %}
+
+    <div class="commentaires-actions">
+        <a href="{% url 'create_commentaire' %}" class="btn btn-primary btn-lg">
+            <i class="fas fa-plus-circle"></i> Ajouter un commentaire
+        </a>
+        <div class="secondary-actions">
+            <a href="{% url 'home1' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-home"></i> Accueil
+            </a>
+            <a href="{% url 'mes_commentaires' %}" class="btn btn-outline-success">
+                <i class="fas fa-comment"></i> Mes commentaires
+            </a>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script src="{% static 'js/commentaires.js' %}"></script>
+{% endblock %}
+{% endblock %}

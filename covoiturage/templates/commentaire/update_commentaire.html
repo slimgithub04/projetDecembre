@@ -1,0 +1,114 @@
+{% extends 'commentaire/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">Mettre à jour le commentaire</h2>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        {% if form.texte.errors %}
+                            <div class="text-danger">
+                                {% for error in form.texte.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <button type="button" id="emoji-picker-btn" class="btn btn-secondary">
+                                    😊 Ajouter un emoji
+                                </button>
+                                <button type="button" id="gif-picker-btn" class="btn btn-info">
+                                    🎥 Rechercher un GIF
+                                </button>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/emoji-button.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const emojiButton = document.getElementById('emoji-picker-btn');
+        const emojiContainer = document.createElement('div');
+        emojiContainer.style.position = 'absolute';
+        emojiContainer.style.zIndex = '1000';
+        emojiContainer.style.background = 'white';
+        emojiContainer.style.border = '1px solid #ccc';
+        emojiContainer.style.padding = '10px';
+        emojiContainer.style.display = 'none';  // On cache au départ
+        document.body.appendChild(emojiContainer);
+
+        emojiButton.addEventListener('click', function() {
+            emojiContainer.style.display = emojiContainer.style.display === 'none' ? 'block' : 'none';
+            displayCategories();
+        });
+
+        // Afficher les catégories d'emojis
+        function displayCategories() {
+            emojiContainer.innerHTML = '';  // Efface les anciens contenus
+            const categoryList = document.createElement('ul');
+            categoryList.style.display = 'flex'; // Définit l'affichage en ligne
+            categoryList.style.flexWrap = 'wrap'; // Permet aux éléments de revenir à la ligne
+            categoryList.style.padding = '0'; // Enlève les marges par défaut
+
+            const emojiCategories = {
+                "😀": ["😀", "😁", "😂", "🤣", "😃", "😄"],
+                "👍": ["👍", "👎", "👌", "✌️", "🤞"]
+                // Ajouter ici toutes les catégories d'emojis
+            };
+
+            for (let category in emojiCategories) {
+                const listItem = document.createElement('li');
+                const categoryButton = document.createElement('button');
+                categoryButton.textContent = category;
+                categoryButton.style.marginRight = '10px';  // Espacement horizontal
+                categoryButton.style.marginBottom = '5px';  // Espacement vertical
+                categoryButton.addEventListener('click', function() {
+                    displayEmojis(emojiCategories[category]);
+                });
+                listItem.appendChild(categoryButton);
+                categoryList.appendChild(listItem);
+            }
+
+            emojiContainer.appendChild(categoryList);
+        }
+
+        function displayEmojis(emojis) {
+            emojiContainer.innerHTML = '';
+            emojis.forEach(emoji => {
+                const emojiItem = document.createElement('button');
+                emojiItem.textContent = emoji;
+                emojiItem.style.fontSize = '24px';
+                emojiItem.style.margin = '5px';
+                emojiItem.style.cursor = 'pointer';
+                emojiItem.addEventListener('click', function() {
+                    const textarea = document.getElementById('id_texte');
+                    textarea.value += emoji;
+                });
+                emojiContainer.appendChild(emojiItem);
+            });
+
+            const backButton = document.createElement('button');
+            backButton.textContent = 'Retour';
+            backButton.addEventListener('click', function() {
+                displayCategories();
+            });
+            emojiContainer.appendChild(backButton);
+        }
+    });
+</script>
+
+{% endblock %}

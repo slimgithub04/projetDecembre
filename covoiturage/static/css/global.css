@@ -1,0 +1,76 @@
+:root {
+    /* Palette de couleurs vibrantes */
+    --primary-color: #6a5acd;      /* Bleu-violet doux */
+    --secondary-color: #3cb371;    /* Vert mer moyen */
+    --accent-color: #ff6b6b;       /* Rouge corail */
+    --background-color: #f0f4f8;   /* Bleu-gris très clair */
+    --text-primary: #2c3e50;       /* Bleu-gris foncé */
+    --text-secondary: #34495e;     /* Bleu-gris plus foncé */
+    --card-bg: #ffffff;            /* Blanc légèrement cassé */
+    
+    /* Dégradés */
+    --gradient-primary: linear-gradient(135deg, #6a5acd 0%, #4a3aad 100%);
+    --gradient-secondary: linear-gradient(135deg, #3cb371 0%, #2ba360 100%);
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-primary);
+    font-family: 'Nunito', 'Roboto', sans-serif;
+}
+
+.container {
+    background-color: transparent;
+}
+
+/* Cartes avec effet élégant */
+.card, .commentaire-card {
+    background: var(--card-bg);
+    border: none;
+    border-radius: 12px;
+    box-shadow: 
+        0 4px 6px rgba(108, 122, 137, 0.1), 
+        0 1px 3px rgba(108, 122, 137, 0.08);
+    transition: all 0.3s ease;
+}
+
+.card:hover, .commentaire-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+        0 10px 20px rgba(108, 122, 137, 0.15), 
+        0 3px 6px rgba(108, 122, 137, 0.12);
+}
+
+/* Boutons avec dégradés */
+.btn-primary {
+    background: var(--gradient-primary);
+    border: none;
+    transition: transform 0.2s ease;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+    background: var(--gradient-primary);
+}
+
+.btn-secondary {
+    background: var(--gradient-secondary);
+    border: none;
+    color: white;
+}
+
+.btn-secondary:hover {
+    transform: scale(1.05);
+    background: var(--gradient-secondary);
+}
+
+/* Animations de couleur */
+@keyframes colorPulse {
+    0% { background-color: var(--background-color); }
+    50% { background-color: color-mix(in srgb, var(--primary-color) 20%, white); }
+    100% { background-color: var(--background-color); }
+}
+
+.animate-background {
+    animation: colorPulse 3s infinite;
+}

@@ -1,0 +1,326 @@
+{% extends 'evaluation/base4.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block content %}
+
+<div class="container mt-5">
+    <h2>{% if evaluation %}Modifier{% else %}Ajouter{% endif %} une évaluation</h2>
+
+    <!-- Affiche les détails du trajet -->
+    <p><strong>Trajet :</strong> {{ trajet }}</p>
+</div>
+<div class="container mt-">
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        
+        <!-- Communication -->
+        <div class="mt-4">
+            {{ form.communication.label_tag }}
+            {{ form.communication }}
+            <span id="slider-value-communication" class="ms-3">5</span>
+        </div>
+
+        <!-- Ponctualité -->
+        <div class="mt-4">
+            <label for="note-slider">{{ form.ponctualite.label_tag }}  :</label>
+            {{ form.ponctualite }}
+            <span id="slider-value-ponctualite" class="ms-3">5</span>
+        </div>
+
+        <!-- Confort -->
+        <div class="mt-4">
+            {{ form.confort.label_tag }}
+            {{ form.confort }}
+            <span id="slider-value-confort" class="ms-3">5</span>
+        </div>
+
+        
+        <!-- Note (readonly) -->
+    
+
+
+        <!-- Bouton de soumission -->
+
+        <div class="button-container">
+        <button type="submit" class="btn btn-primary mt-4 custom-button">
+            {% if evaluation %}Modifier{% else %}Enregistrer{% endif %}
+        </button>
+        </div>
+    </form>
+
+    <!-- Affichage des erreurs -->
+    {% if form.errors %}
+    <div class="alert alert-danger mt-3">
+        <ul>
+            {% for field in form %}
+            {% for error in field.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Script pour mettre à jour la valeur des sliders -->
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Select all range inputs
+        const sliders = {
+            'communication': document.getElementById('id_communication'),
+            'ponctualite': document.getElementById('id_ponctualite'),
+            'confort': document.getElementById('id_confort')
+        };
+
+        // Select value display spans
+        const valueDisplays = {
+            'communication': document.getElementById('slider-value-communication'),
+            'ponctualite': document.getElementById('slider-value-ponctualite'),
+            'confort': document.getElementById('slider-value-confort')
+        };
+
+        // Select note input
+        const noteInput = document.getElementById('id_note');
+
+        // Function to update slider color and value
+        function updateSlider(slider, valueDisplay) {
+            // Calculate percentage
+            const value = slider.value;
+            const min = slider.min;
+            const max = slider.max;
+            const percentage = ((value - min) / (max - min)) * 100;
+
+            // Update value display
+            valueDisplay.textContent = value;
+
+            // Create gradient based on slider value
+            const gradient = `linear-gradient(to left, 
+                #4CAF50 0%, 
+                #4CAF50 ${percentage}%, 
+                #FFC107 ${percentage}%, 
+                #F44336 100%)`;
+            
+            // Apply gradient to slider
+            slider.style.background = gradient;
+
+            // Optional: Change thumb color based on value
+            slider.style.setProperty('--thumb-color', getThumbColor(percentage));
+        }
+
+        // Function to get thumb color based on percentage
+        function getThumbColor(percentage) {
+            if (percentage < 33) return '#F44336'; // Red for low values
+            if (percentage < 66) return '#FFC107'; // Yellow for medium values
+            return '#4CAF50'; // Green for high values
+        }
+
+        // Function to calculate overall note
+        function calculateOverallNote() {
+            const communicationValue = Number(sliders.communication.value);
+            const ponctualiteValue = Number(sliders.ponctualite.value);
+            const confortValue = Number(sliders.confort.value);
+
+            // Calculate average and scale to 100
+            const overallNote = Math.round(
+                ((communicationValue + ponctualiteValue + confortValue) / 3) * 10
+            );
+
+            // Update note input
+            if (noteInput) {
+                noteInput.value = overallNote;
+            }
+        }
+
+        // Add event listeners to each slider
+        Object.keys(sliders).forEach(key => {
+            const slider = sliders[key];
+            const valueDisplay = valueDisplays[key];
+
+            if (slider && valueDisplay) {
+                // Initial update
+                updateSlider(slider, valueDisplay);
+
+                // Add event listener for dynamic updates
+                slider.addEventListener('input', function() {
+                    updateSlider(this, valueDisplay);
+                    calculateOverallNote();
+                });
+            }
+        });
+    });
+</script>
+<style>
+    #note-input {
+        width: 80px;
+        height: 50px;
+        border: 2px solid #4CAF50;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        background-color: #f9f9f9;
+        color: #333;
+    }
+
+    #note-input:focus {
+        outline: none;
+        border-color: #2196F3;
+    }
+</style>
+
+<style>
+    /* Enhanced slider styling to support dynamic coloring */
+    input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 10px;
+        border-radius: 5px;
+        background: linear-gradient(to right, #4CAF50, #FFC107, #F44336);
+        outline: none;
+        opacity: 0.7;
+        transition: opacity .2s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: var(--thumb-color, #3f51b5);
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    input[type="range"]:hover {
+        opacity: 1;
+    }
+</style>
+<style>
+    .button-container {
+    text-align: center; /* Centre horizontalement */
+    margin-top: 20px; /* Ajustez la marge si nécessaire */
+    }
+
+    .custom-button {
+        background-color: #007bff; /* Bleu primaire */
+        color: white; /* Couleur du texte */
+        font-size: 1.1rem; /* Taille du texte */
+        font-weight: bold; /* Texte en gras */
+        padding: 10px 20px; /* Espacement interne */
+        border-radius: 8px; /* Coins arrondis */
+        border: none; /* Supprime la bordure */
+        transition: all 0.3s ease; /* Effet de transition */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+    }
+
+    .custom-button:hover {
+        background-color: #0056b3; /* Couleur plus sombre au survol */
+        transform: translateY(-2px); /* Légère élévation */
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Ombre plus marquée */
+    }
+
+    .custom-button:active {
+        background-color: #003f7f; /* Couleur encore plus sombre au clic */
+        transform: translateY(1px); /* Rendre le bouton pressé */
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2); /* Réduction de l'ombre */
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Sélection de tous les sliders
+        const sliders = document.querySelectorAll('input[type="range"]');
+
+        // Fonction pour mettre à jour le dégradé du slider
+        function updateSliderGradient(slider) {
+            // Calculer le pourcentage
+            const min = Number(slider.min);
+            const max = Number(slider.max);
+            const value = Number(slider.value);
+            
+            // Calculer le pourcentage de remplissage
+            const percentage = ((value - min) / (max - min)) * 100;
+
+            // Créer un dégradé personnalisé
+            const gradient = `linear-gradient(to left, 
+                #F44336 0%, 
+                #F44336 ${percentage}%, 
+                #4CAF50 ${percentage}%, 
+                #4CAF50 100%)`;
+
+            // Appliquer le dégradé
+            slider.style.background = gradient;
+
+            // Mettre à jour le span de valeur
+            const valueSpan = document.getElementById(`slider-value-${slider.id.split('_')[1]}`);
+            if (valueSpan) {
+                valueSpan.textContent = value;
+            }
+
+            // Calcul de la note globale
+            calculateOverallNote();
+        }
+
+        // Fonction pour calculer la note globale
+        function calculateOverallNote() {
+            const communication = document.getElementById('id_communication');
+            const ponctualite = document.getElementById('id_ponctualite');
+            const confort = document.getElementById('id_confort');
+            const noteInput = document.getElementById('id_note');
+
+            if (communication && ponctualite && confort && noteInput) {
+                const overallNote = Math.round(
+                    (Number(communication.value) + 
+                     Number(ponctualite.value) + 
+                     Number(confort.value)) / 3 * 10
+                );
+                noteInput.value = overallNote;
+            }
+        }
+
+        // Ajouter des écouteurs d'événements à chaque slider
+        sliders.forEach(slider => {
+            // Configuration initiale
+            updateSliderGradient(slider);
+
+            // Mise à jour dynamique lors du déplacement
+            slider.addEventListener('input', function() {
+                updateSliderGradient(this);
+            });
+        });
+    });
+</script>
+
+<style>
+    /* Style de base pour les sliders */
+    input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 10px;
+        border-radius: 5px;
+        outline: none;
+        opacity: 0.7;
+        transition: opacity .2s;
+    }
+
+    /* Style du curseur (thumb) */
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        background: #3f51b5;
+        cursor: pointer;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* Effet de survol */
+    input[type="range"]:hover {
+        opacity: 1;
+    }
+</style>
+{% endblock %}
+{% endblock %}

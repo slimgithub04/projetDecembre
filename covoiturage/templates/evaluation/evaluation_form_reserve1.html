@@ -1,0 +1,113 @@
+{% extends 'evaluation/base0.html' %}
+{% block content %}
+<div class="container animate__animated animate__fadeIn">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h2 class="my-3">
+                        <i class="fas fa-star-half-alt me-2"></i>
+                        {% if evaluation %}Modifier{% else %}Nouvelle{% endif %} Évaluation
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <h4 class="form-label text-center mb-4">Détails du Trajet</h4>
+                            <div class="alert alert-info text-center" role="alert">
+                                <strong>Trajet :</strong> {{ trajet }}
+                            </div>
+                        </div>
+
+                        <!-- Interactive Sliders -->
+                        <div class="slider-container">
+                            {% for field in form %}
+                                {% if field.name != 'note' %}
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                        <span id="{{ field.name }}-value" class="badge bg-primary">{{ field.value|default:5 }}/10</span>
+                                    </div>
+                                    <input type="{{ field.field.widget.input_type }}" 
+                                           name="{{ field.name }}" 
+                                           id="{{ field.id_for_label }}" 
+                                           class="form-range slider-interactive" 
+                                           min="0" 
+                                           max="10" 
+                                           step="1" 
+                                           value="{{ field.value|default:5 }}"
+                                           oninput="updateSliderInteractive(this)">
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+
+                            <!-- Overall Rating -->
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <label for="note-slider" class="form-label">Note Globale</label>
+                                    <span id="note-value" class="badge bg-success">50/100</span>
+                                </div>
+                                <input type="range" 
+                                       id="note-slider" 
+                                       name="note" 
+                                       class="form-range slider-interactive" 
+                                       min="0" 
+                                       max="100" 
+                                       step="1" 
+                                       value="50"
+                                       oninput="updateSliderInteractive(this)">
+                            </div>
+                        </div>
+
+                        <!-- Detailed Feedback -->
+                        <div class="mb-4">
+                            <label for="commentaire" class="form-label">Commentaire Détaillé</label>
+                            <textarea class="form-control" id="commentaire" name="commentaire" rows="4" 
+                                      placeholder="Partagez vos impressions sur le trajet...">{{ evaluation.commentaire|default:"" }}</textarea>
+                            <small class="form-text text-muted">Votre retour nous aide à améliorer l'expérience de tous.</small>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save me-2"></i>
+                                {% if evaluation %}Modifier{% else %}Enregistrer{% endif %}
+                            </button>
+                            <a href=# class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-times me-2"></i>Annuler
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function updateSliderInteractive(slider) {
+    const valueSpan = document.getElementById(slider.name + '-value');
+    const maxValue = slider.max === '100' ? 100 : 10;
+    
+    valueSpan.textContent = `${slider.value}/${maxValue}`;
+    
+    const percentage = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+    slider.style.background = `linear-gradient(to right, 
+        #4CAF50 0%, 
+        #4CAF50 ${percentage}%, 
+        #E0E0E0 ${percentage}%, 
+        #E0E0E0 100%)`;
+}
+
+// Initialize sliders on page load
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slider-interactive').forEach(slider => {
+        updateSliderInteractive(slider);
+    });
+});
+</script>
+{% endblock %}

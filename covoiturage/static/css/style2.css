@@ -1,0 +1,33 @@
+/* Header styles */
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Card styles */
+.card-header {
+    background: linear-gradient(45deg, #007bff, #00bcd4);
+    color: #fff;
+}
+
+.card-body {
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Badge styles */
+.badge {
+    font-size: 0.9rem;
+    padding: 0.4em 0.6em;
+}
+
+/* Footer styles */
+footer {
+    background-color: #333;
+    color: #aaa;
+}
+
+footer p {
+    margin: 0;
+    font-size: 0.9rem;
+}

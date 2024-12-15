@@ -1,0 +1,293 @@
+{% extends 'commentaire/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">Ajouter un commentaire</h2>
+                </div>
+                <div class="card-body">
+                    {% if confirmation_required %}
+                        <div class="alert alert-warning">
+                            <h4>Confirmation de la soumission</h4>
+                            <p>Êtes-vous sûr de vouloir soumettre ce commentaire ?</p>
+                            
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Aperçu du commentaire</h5>
+                                    <p class="card-text">{{ form_data.texte }}</p>
+                                    
+                                    {% if form.gif.data %}
+                                    <div class="mt-3">
+                                        <strong>GIF joint :</strong>
+                                        <p>Un fichier GIF est attaché à ce commentaire.</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        {% if confirmation_required %}
+                            <input type="hidden" name="confirmed" value="true">
+                            {% for field_name, field_value in form_data.items %}
+                                <input type="hidden" name="{{ field_name }}" value="{{ field_value }}">
+                            {% endfor %}
+                            
+                            <div class="d-flex justify-content-between">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-check"></i> Oui, soumettre
+                                </button>
+                                <a href="{% url 'create_commentaire' %}" class="btn btn-danger">
+                                    <i class="fas fa-times"></i> Non, annuler
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="form-group mb-3">
+                                <label for="{{ form.texte.id_for_label }}" class="form-label">Votre commentaire</label>
+                                {{ form.texte }}
+                                {% if form.texte.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.texte.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                        
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <button type="button" id="emoji-picker-btn" class="btn btn-secondary">
+                                        😊 Ajouter un emoji
+                                    </button>
+                                    <button type="button" id="gif-picker-btn" class="btn btn-info">
+                                        🎥 Rechercher un GIF
+                                    </button>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Soumettre</button>
+                            </div>
+                        {% endif %}
+                    </form>
+                </div>
+                <div id="gif-container" style="display: none; position: fixed; top: 10%; left: 50%; transform: translateX(-50%); z-index: 1050; background: white; border: 1px solid #ccc; padding: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+                    <button id="close-gif-btn" style="position: absolute; top: 5px; right: 10px; background: red; color: white; border: none; cursor: pointer; padding: 5px;">✖</button>
+                    <div id="gif-content"></div> <!-- Les GIFs vont être injectés ici -->
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/emoji-button.min.js"></script>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+        const emojiButton = document.getElementById('emoji-picker-btn');
+        const emojiContainer = document.createElement('div');
+        emojiContainer.style.position = 'absolute';
+        emojiContainer.style.zIndex = '1000';
+        emojiContainer.style.background = 'white';
+        emojiContainer.style.border = '1px solid #ccc';
+        emojiContainer.style.padding = '10px';
+        emojiContainer.style.display = 'none';  // On cache au départ
+        document.body.appendChild(emojiContainer);
+
+        const emojiCategories = {
+    "😀": ["😀", "😁", "😂", "🤣", "😃", "😄", "😅", "😆", "😊", "😎", "😍", "😘", "🥰", "😋", "😜", "😝", "😛", "🤑"],
+    "👍": ["👍", "👎", "👌", "✌️", "🤞", "✋", "👋", "👏", "🙏", "🤲", "💪", "🖐", "🤚", "👊", "🤜", "🤛"],
+    "💻": ["📱", "💻", "🖥️", "📷", "📺", "🎧", "🎥", "📚", "💼", "🔑", "🛍️", "📦", "📮", "🖊️", "🖋️", "🖌️"],
+    "🐱": ["🐱", "🐶", "🐰", "🦁", "🐯", "🐻", "🐼", "🐨", "🐸", "🐒", "🐷", "🐧", "🐦", "🦉", "🐦", "🦄", "🦋", "🐝"],
+    "🍏": ["🍏", "🍔", "🍟", "🍕", "🍣", "🍩", "🍪", "🍫", "🍦", "🍪", "🍿", "🍉", "🍇", "🍓", "🍒", "🍍", "🍋", "🥑"],
+    "🚗": ["✈️", "🚗", "🚕", "🚙", "🛶", "🚢", "🚉", "🚝", "🚂", "🚞", "🛣️", "🛤️", "⛵", "🗺️", "🏖️", "🧳"],
+    "🌳": ["🌳", "🌲", "🌵", "🌷", "🌹", "🌺", "🌻", "🍃", "🍂", "🌾", "🌻", "🌿", "🌼", "🍁", "🌱", "🌴"],
+    "⚽": ["⚽", "🏀", "🏈", "🎾", "🏓", "🏸", "🥏", "🎯", "🏌️‍♂️", "🏋️‍♂️", "🚴‍♀️", "⛷️", "🏂", "🎮", "🎳", "🎲"],
+    "❤️": ["❤️", "💙", "💚", "💛", "💜", "🖤", "🤍", "🤎", "💔", "💕", "💞", "💓", "💗", "💖", "💘", "💌"],
+    "🌷": ["💐", "🌷", "🌼", "🌸", "🌺", "🌻", "🌹", "🌳", "🌾", "🍃", "🌵", "🌴", "🍂", "🍁", "🌲", "🌿"],
+    "🎉": ["🎉", "🎊", "🎂", "🎁", "🎈", "🕯️", "🥂", "🍾", "🎶", "🎤", "🎧", "🎵", "🎷", "🎺", "🎻", "🎸"],
+    "🚀": ["🚀", "🛸", "🌌", "🪐", "🌙", "🌚", "⭐", "✨", "💫", "🪐", "🌠", "🌟", "🪐", "🌍", "🌎"],
+    "🎮": ["🎮", "🎯", "🎳", "🎲", "🧩", "🃏", "🕹️", "🧸", "💻", "🎧", "📱", "🎧", "🎤", "📹"],
+    "🎠": ["🎠", "🎡", "🎢", "🎪", "🎭", "🍿", "🍦", "🎨", "🖌️", "🎭", "🎞️", "🎥", "🍿"],
+    "🧘‍♂️": ["🧘‍♂️", "🏋️‍♀️", "🤸‍♀️", "🏃‍♀️", "🧗‍♀️", "🏌️‍♀️", "⛷️", "🏄‍♀️", "🤼‍♂️", "🤽‍♂️", "🚴‍♂️", "🏂", "⛹️‍♂️"],
+    "👗": ["👗", "👚", "👛", "🧥", "👠", "👡", "👢", "👑", "🧢", "🧤", "🧣", "👒", "👓", "🕶️", "💍"],
+    "🧳": ["🧳", "🎒", "🎒", "🎽", "🧳", "👜", "👝", "🧰", "💼", "🛅", "👝", "🛒"],
+    "💼": ["💼", "🔨", "⚙️", "🧰", "🛠️", "🔧", "🔩", "🔩", "🛠️", "🔨", "🧲", "⚙️", "🧰", "🛠️"],
+    "🕹️": ["🕹️", "🎮", "🧩", "🃏", "🀄", "🎴", "🃏", "♟️", "♣️", "♥️", "♦️", "♠️"],
+    "🤖": ["🦾", "🤖", "👾", "🧑‍💻", "💻", "🧠", "📡", "🛠️", "🔋", "🖥️", "⚙️", "🔌"]
+}
+
+
+        emojiButton.addEventListener('click', function() {
+            emojiContainer.style.display = emojiContainer.style.display === 'none' ? 'block' : 'none';
+            displayCategories();
+        });
+
+        // Afficher les catégories d'emojis
+function displayCategories() {
+    emojiContainer.innerHTML = '';  // Efface les anciens contenus
+
+    const categoryList = document.createElement('ul');
+    categoryList.style.display = 'flex'; // Définit l'affichage en ligne
+    categoryList.style.flexWrap = 'wrap'; // Permet aux éléments de revenir à la ligne
+    categoryList.style.padding = '0'; // Enlève les marges par défaut
+
+    for (let category in emojiCategories) {
+        const listItem = document.createElement('li');
+        const categoryButton = document.createElement('button');
+        categoryButton.textContent = category;
+        categoryButton.style.marginRight = '10px';  // Espacement horizontal
+        categoryButton.style.marginBottom = '5px';  // Espacement vertical
+        categoryButton.addEventListener('click', function() {
+            displayEmojis(emojiCategories[category]);
+        });
+        listItem.appendChild(categoryButton);
+        categoryList.appendChild(listItem);
+    }
+
+    emojiContainer.appendChild(categoryList);
+}
+
+         
+
+        function displayEmojis(emojis) {
+            emojiContainer.innerHTML = '';
+            emojis.forEach(emoji => {
+                const emojiItem = document.createElement('button');
+                emojiItem.textContent = emoji;
+                emojiItem.style.fontSize = '24px';
+                emojiItem.style.margin = '5px';
+                emojiItem.style.cursor = 'pointer';
+                emojiItem.addEventListener('click', function() {
+                    const textarea = document.getElementById('id_texte');
+                    textarea.value += emoji;
+                });
+                emojiContainer.appendChild(emojiItem);
+            });
+
+            const backButton = document.createElement('button');
+            backButton.textContent = "Retour aux catégories";
+            backButton.style.marginTop = '10px';
+            backButton.addEventListener('click', function() {
+                displayCategories();
+            });
+            emojiContainer.appendChild(backButton);
+        }
+    });
+</script>
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+    const gifButton = document.getElementById('gif-picker-btn');
+    const gifContainer = document.createElement('div');
+
+    // Styles pour afficher le conteneur en bas de la page
+    gifContainer.style.position = 'fixed'; // Position fixe pour rester visible en bas
+    gifContainer.style.bottom = '0'; // Aligner sur le bas
+    gifContainer.style.left = '0'; // Aligner sur le côté gauche
+    gifContainer.style.width = '100%'; // Occupe toute la largeur
+    gifContainer.style.zIndex = '1000';
+    gifContainer.style.background = 'white';
+    gifContainer.style.borderTop = '1px solid #ccc'; // Bordure en haut
+    gifContainer.style.padding = '10px';
+    gifContainer.style.boxShadow = '0 -2px 5px rgba(0,0,0,0.1)';
+    gifContainer.style.display = 'none'; // Masqué par défaut
+    gifContainer.style.maxHeight = '200px'; // Hauteur maximale
+    gifContainer.style.overflowY = 'scroll'; // Ajoute une barre de défilement verticale
+
+    document.body.appendChild(gifContainer);
+
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'Fermer';
+    closeButton.style.display = 'block';
+    closeButton.style.marginBottom = '10px';
+    closeButton.style.background = 'red';
+    closeButton.style.color = 'white';
+    closeButton.style.border = 'none';
+    closeButton.style.cursor = 'pointer';
+    gifContainer.appendChild(closeButton);
+
+    const apiKey = 'pJQc0pjUk7XZAZa5r2uejb0E1WdMjaKU'; // Votre clé API ici
+
+    gifButton.addEventListener('click', function () {
+        const searchTerm = prompt('Entrez le terme de recherche pour un GIF:');
+        if (searchTerm) {
+            console.log('Recherche pour le mot-clé: ' + searchTerm);
+
+            const url = `https://api.giphy.com/v1/gifs/search?q=${encodeURIComponent(searchTerm)}&api_key=${apiKey}&limit=13`;
+
+            fetch(url)
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    gifContainer.innerHTML = ''; // Efface les résultats précédents
+
+                    // Ajouter le bouton "Fermer" à nouveau
+                    gifContainer.appendChild(closeButton);
+
+                    const gifs = data.data;
+                    if (gifs.length === 0) {
+                        gifContainer.innerHTML = '<p>Aucun GIF trouvé pour ce mot-clé.</p>';
+                    } else {
+                        gifs.forEach((gif) => {
+                            const img = document.createElement('img');
+                            img.src = gif.images.fixed_height.url;
+                            img.alt = gif.title;
+                            img.style.width = '100px';
+                            img.style.margin = '5px';
+                            img.style.cursor = 'pointer';
+
+                            img.addEventListener('click', function () {
+                                // Ajouter le GIF sélectionné dans le champ de texte
+                                const textarea = document.getElementById('id_texte');
+                                textarea.value += `![GIF](${gif.images.fixed_height.url}) `;
+                            });
+
+                            gifContainer.appendChild(img);
+                        });
+                    }
+
+                    // Afficher le conteneur GIF
+                    gifContainer.style.display = 'block';
+                })
+                .catch((error) => {
+                    console.error('Erreur de récupération des GIFs:', error);
+                    gifContainer.innerHTML = '<p>Erreur lors de la récupération des GIFs.</p>';
+                });
+        }
+    });
+
+    // Fermer le conteneur en cliquant sur le bouton "Fermer"
+    closeButton.addEventListener('click', function () {
+        gifContainer.style.display = 'none';
+    });
+
+    // Fermer le conteneur en cliquant à l'extérieur
+    document.addEventListener('click', function (event) {
+        if (!gifContainer.contains(event.target) && event.target !== gifButton) {
+            gifContainer.style.display = 'none';
+        }
+    });
+});
+
+
+</script>
+<style>
+    #emoji-container ul {
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none;
+    padding: 0;
+}
+
+#emoji-container li {
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+
+</style>
+{% endblock %}

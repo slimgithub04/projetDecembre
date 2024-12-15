@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Règles Générales - Wasalni</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+            color: #333;
+        }
+        header {
+            text-align: center;
+            background: linear-gradient(to right, #4caf50, #45a049);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease;
+        }
+        section h2 {
+            font-size: 1.5rem;
+            color: #4caf50;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #4caf50;
+            padding-bottom: 5px;
+        }
+        pre {
+            white-space: pre-wrap;
+            font-size: 1rem;
+            line-height: 1.5;
+            background-color: #f8f9fa;
+            border-left: 5px solid #4caf50;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: background-color 0.3s, transform 0.2s;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-3px);
+        }
+        button:active {
+            transform: translateY(1px);
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 0 0 10px 10px;
+            font-size: 0.9rem;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    <!-- PDF.js library for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Règles Générales - Wasalni</h1>
+    </header>
+    <div class="container">
+        <section>
+            <h2>Introduction</h2>
+            <p>Ce document décrit les lois, conditions et conséquences liées aux infractions dans le cadre de l'utilisation de notre service de covoiturage Wasalni. Les règles sont mises en place pour assurer une expérience sûre, équitable et agréable pour tous les utilisateurs.</p>
+        </section>
+        <section>
+            <h2>1. Lois Générales</h2>
+            <ul>
+                <li>Les utilisateurs doivent respecter les règles du site, y compris la fourniture d'informations exactes.</li>
+                <li>Les passagers doivent arriver au point de rendez-vous à l'heure convenue.</li>
+                <li>Le conducteur doit assurer la sécurité des passagers et respecter le trajet convenu.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>2. Pénalités et Conditions</h2>
+            <p>Les pénalités sont appliquées en cas de violation des règles. Voici les types de pénalités :</p>
+            <ul>
+                <li><strong>Annulation tardive (passager ou conducteur) :</strong>
+                    <ul>
+                        <li><strong>Condition :</strong> Annulation dans les 12 heures avant le départ.</li>
+                        <li><strong>Conséquence :</strong> Une pénalité mineure avec une réduction de la note d'évaluation.</li>
+                    </ul>
+                </li>
+                <li><strong>Annulation sans informer :</strong>
+                    <ul>
+                        <li><strong>Condition :</strong> Non-information préalable d'une annulation.</li>
+                        <li><strong>Conséquence :</strong> Réduction significative du score général.</li>
+                    </ul>
+                </li>
+                <li><strong>Harcèlement ou comportement inapproprié :</strong>
+                    <ul>
+                        <li><strong>Condition :</strong> Plainte confirmée via le système de réclamation, accompagnée de preuves.</li>
+                        <li><strong>Conséquence :</strong> Suspension temporaire ou permanente du compte.</li>
+                    </ul>
+                </li>
+                <li><strong>Paiement non effectué :</strong>
+                    <ul>
+                        <li><strong>Condition :</strong> Paiement non réalisé pour un trajet confirmé.</li>
+                        <li><strong>Conséquence :</strong> Restriction d'accès au service jusqu'à régularisation.</li>
+                    </ul>
+                </li>
+                <li><strong>Point de descente incorrect :</strong>
+                    <ul>
+                        <li><strong>Condition :</strong> Informations incorrectes concernant le point de descente.</li>
+                        <li><strong>Conséquence :</strong> Pénalité moyenne et avertissement.</li>
+                    </ul>
+                </li>
+                <li><strong>Nombre de places incorrect :</strong>
+                    <ul>
+                        <li><strong>Condition :</strong> Déclaration erronée sur le nombre de places disponibles.</li>
+                        <li><strong>Conséquence :</strong> Avertissement ou suspension temporaire.</li>
+                    </ul>
+                </li>
+                <li><strong>Disponibilité des bagages incorrecte :</strong>
+                    <ul>
+                        <li><strong>Condition :</strong> Incohérence dans les informations sur les bagages.</li>
+                        <li><strong>Conséquence :</strong> Réduction du score d'évaluation.</li>
+                    </ul>
+                </li>
+                <li><strong>Mauvaise évaluation injustifiée :</strong>
+                    <ul>
+                        <li><strong>Condition :</strong> Une évaluation abusive pour influencer les autres utilisateurs.</li>
+                        <li><strong>Conséquence :</strong> Avertissement ou suppression de l'évaluation concernée.</li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+        <section>
+            <h2>3. Processus de Réclamation</h2>
+            <p>Les utilisateurs peuvent déposer une réclamation en cas de litige ou de problème avec un trajet. Le processus est le suivant :</p>
+            <ol>
+                <li>Soumettre une réclamation via le formulaire en ligne.</li>
+                <li>Fournir des preuves tangibles (captures d'écran, documents, etc.).</li>
+                <li>L'équipe analysera les preuves fournies et prendra une décision dans un délai de 48 heures.</li>
+                <li>En cas de nécessité, un email de vérification sera envoyé.</li>
+            </ol>
+        </section>
+        <section>
+            <h2>4. Conséquences sur les Évaluations</h2>
+            <p>Chaque pénalité affectera directement ou indirectement la note globale de l'utilisateur :</p>
+            <ul>
+                <li>Une évaluation négative est ajoutée en cas de pénalité confirmée.</li>
+                <li>Les suspensions peuvent être appliquées pour les comportements graves.</li>
+                <li>Les comportements réguliers non conformes peuvent entraîner une réduction progressive du score global.</li>
+            </ul>
+        </section>
+        <section>
+            <h2>5. Analyse et Décisions via IA</h2>
+            <p>Wasalni utilise des technologies avancées d'intelligence artificielle pour analyser les données des réclamations et des évaluations. Cela permet de garantir des décisions justes et rapides, tout en identifiant les comportements récurrents problématiques.</p>
+        </section>
+        <section>
+            <h2>6. Sanctions Supplémentaires</h2>
+            <ul>
+                <li><strong>Bannissement temporaire :</strong> En cas de violations fréquentes, un utilisateur peut être suspendu pour une période déterminée.</li>
+                <li><strong>Suppression de compte :</strong> Les infractions graves ou récurrent
+        </section>
+        <section>
+            <h2>Télécharger les Règles</h2>
+                <form method="get">
+                 <button type="submit" name="download" value="pdf">
+                                Télécharger en PDF
+                </button>
+                </form>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Wasalni. Tous droits réservés.</p>
+    </footer>
+   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+document.querySelector('button[name="download"]').addEventListener('click', function (event) {
+    event.preventDefault();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Company Logo and Watermark
+    function addWatermark(doc) {
+        // Wasalni Logo-like Watermark
+        doc.setTextColor(200, 200, 200);
+        doc.setFontSize(60);
+        doc.text('Wasalni', 105, 150, { 
+            align: 'center', 
+            angle: -45,
+            opacity: 0.1
+        });
+    }
+
+    // Add Decorative Header
+    function addHeader(doc) {
+        // Green gradient background for header
+        doc.setFillColor(76, 175, 80);
+        doc.setDrawColor(76, 175, 80);
+        doc.rect(0, 0, 210, 20, 'F');
+
+        // White text on green background
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(18);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Règles Générales - Wasalni', 105, 15, { align: 'center' });
+    }
+
+    // Styled Section Function
+    function addStyledSection(doc, title, content, y) {
+        if (y > 270) {
+            doc.addPage();
+            y = 20;
+        }
+
+        // Section Title
+        doc.setFontSize(14);
+        doc.setTextColor(76, 175, 80);
+        doc.setFont('helvetica', 'bold');
+        doc.text(title, 10, y);
+        y += 10;
+
+        // Section Content
+        doc.setFontSize(12);
+        doc.setTextColor(0, 0, 0);
+        doc.setFont('helvetica', 'normal');
+        doc.text(content, 10, y, { 
+            maxWidth: 190, 
+            lineHeightFactor: 1.5 
+        });
+        y += 20;
+
+        return y;
+    }
+
+    // Add Signature and Stamp
+    function addSignatureAndStamp(doc) {
+        const pageCount = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
+            
+            // Page Number
+            doc.setFontSize(10);
+            doc.setTextColor(150);
+            doc.text(`Page ${i} of ${pageCount}`, 200, 290, { align: 'right' });
+
+            // Left Side - Signature
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            doc.text('Signature', 20, 270);
+            
+            // Hand-drawn style signature simulation
+            doc.setLineWidth(0.5);
+            doc.setDrawColor(0, 0, 0);
+            doc.line(20, 280, 60, 280);
+            doc.line(20, 280, 30, 275);
+            doc.line(30, 275, 40, 285);
+            doc.line(40, 285, 50, 275);
+            doc.line(50, 275, 60, 280);
+
+            doc.text('Mohamed Wasalni', 20, 285);
+            doc.text('Directeur Général', 20, 290);
+
+            // Right Side - Realistic Stamp
+            doc.setLineWidth(1);
+            doc.setDrawColor(0, 51, 102); // Dark blue color
+            
+            // Outer circle
+            doc.setFillColor(255, 255, 255);
+            doc.circle(170, 270, 25, 'FD');
+            
+            // Text in concentric circles
+            doc.setFontSize(8);
+            doc.setTextColor(0, 51, 102);
+            
+            // Top curved text
+            doc.text('RÉPUBLIQUE', 170, 253, { align: 'center', angle: -25 });
+            doc.text('WASALNI', 170, 250, { align: 'center', angle: -25 });
+            
+            // Bottom curved text
+            doc.text('ENTREPRISE DE', 170, 287, { align: 'center', angle: 25 });
+            doc.text('TRANSPORT', 170, 290, { align: 'center', angle: 25 });
+            
+            // Center text
+            doc.setFontSize(10);
+            doc.text('OFFICIAL', 170, 267, { align: 'center' });
+            doc.text('DOCUMENT', 170, 272, { align: 'center' });
+            
+            // Date stamp
+            doc.setFontSize(8);
+            doc.text('DATE: ' + new Date().toLocaleDateString(), 170, 280, { align: 'center' });
+            
+            // Stamp border
+            doc.circle(170, 270, 25, 'S');
+        }
+    }
+
+    // Main PDF Generation
+    addHeader(doc);
+    addWatermark(doc);
+
+    let currentY = 30;
+    const sections = [
+        {
+            title: 'Introduction',
+            content: 'Ce document décrit les lois, conditions et conséquences liées aux infractions dans le cadre de l\'utilisation de notre service de covoiturage Wasalni. Les règles sont mises en place pour assurer une expérience sûre, équitable et agréable pour tous les utilisateurs.'
+        },
+        {
+            title: '1. Lois Générales',
+            content: '1. Les utilisateurs doivent respecter les règles du site, y compris la fourniture d\'informations exactes.\n2. Les passagers doivent arriver au point de rendez-vous à l\'heure convenue.\n3. Le conducteur doit assurer la sécurité des passagers et respecter le trajet convenu.'
+        },
+        {
+            title: '2. Pénalités et Conditions',
+            content: 'Les pénalités sont appliquées en cas de violation des règles. Voici les types de pénalités :\n- Annulation tardive : Réduction de la note d\'évaluation.\n- Harcèlement : Suspension temporaire ou permanente.'
+        },
+        {
+            title: '3. Processus de Réclamation',
+            content: 'Les utilisateurs peuvent déposer une réclamation en cas de litige ou de problème avec un trajet. Soumettre une réclamation en ligne avec preuves tangibles. L\'équipe analysera dans un délai de 48 heures.'
+        },
+        {
+            title: '4. Conséquences sur les Évaluations',
+            content: 'Chaque pénalité affecte directement ou indirectement la note globale de l\'utilisateur, pouvant entraîner des suspensions pour comportements graves.'
+        },
+        {
+            title: '5. Analyse et Décisions via IA',
+            content: 'Wasalni utilise des technologies avancées d\'intelligence artificielle pour analyser les données et garantir des décisions justes et rapides.'
+        },
+        {
+            title: '6. Sanctions Supplémentaires',
+            content: 'En cas de violations fréquentes ou graves, les utilisateurs peuvent être suspendus temporairement ou voir leur compte supprimé.'
+        }
+    ];
+
+    // Add Sections
+    sections.forEach(section => {
+        currentY = addStyledSection(doc, section.title, section.content, currentY);
+    });
+
+    // Add Signature and Stamp
+    addSignatureAndStamp(doc);
+
+    // Save PDF
+    doc.save('Regles_Generales_Wasalni.pdf');
+});
+</script>
+
+
+    
+    
+    
+</body>
+</html>

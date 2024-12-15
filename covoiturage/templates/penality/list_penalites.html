@@ -1,0 +1,184 @@
+{% extends "penality/base1.html" %}
+{% load static %}
+
+{% block content %}
+<div x-data="penaltiesManager()" class="container mx-auto px-4 py-8">
+    <div class="bg-white dark:bg-gray-800 shadow-2xl rounded-2xl overflow-hidden">
+        <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6">
+            <h1 class="text-3xl font-bold text-white">Liste des Pénalités</h1>
+        </div>
+
+        <div class="p-6">
+            {% csrf_token %}
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex space-x-4">
+                    <input 
+                        x-model="searchTerm" 
+                        placeholder="Rechercher..." 
+                        class="input input-bordered w-full max-w-xs dark:bg-gray-700 dark:text-white"
+                    >
+                    <select 
+                        x-model="filterType" 
+                        class="select select-bordered w-full max-w-xs dark:bg-gray-700 dark:text-white"
+                    >
+                        <option value="">Tous les types</option>
+                        {% for type in types_penalite %}
+                        <option value="{{ type.0 }}">{{ type.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span>Trier par:</span>
+                    <select 
+                        x-model="sortBy" 
+                        class="select select-bordered w-full max-w-xs dark:bg-gray-700 dark:text-white"
+                    >
+                        <option value="date">Date</option>
+                        <option value="gravite">Gravité</option>
+                        <option value="utilisateur">Utilisateur</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead class="bg-gray-100 dark:bg-gray-700 text-xs uppercase">
+                        <tr>
+                            <th class="px-6 py-3">Utilisateur</th>
+                            <th class="px-6 py-3">Type</th>
+                            <th class="px-6 py-3">Gravité</th>
+                            <th class="px-6 py-3">Date</th>
+                            <th class="px-6 py-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="penalite in filteredAndSortedPenalties" :key="penalite.id">
+                            <tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition">
+                                <td class="px-6 py-4" x-text="penalite.utilisateur"></td>
+                                <td class="px-6 py-4" x-text="penalite.type"></td>
+                                <td class="px-6 py-4">
+                                    <span 
+                                        x-text="penalite.gravite" 
+                                        :class="{
+                                            'text-green-600': penalite.gravite === 'Faible',
+                                            'text-yellow-600': penalite.gravite === 'Moyenne',
+                                            'text-red-600': penalite.gravite === 'Élevée'
+                                        }"
+                                    ></span>
+                                </td>
+                                <td class="px-6 py-4" x-text="penalite.date"></td>
+                                <td class="px-6 py-4">
+                                    <div class="flex space-x-2">
+                                        <a href="{% if penalite.id %}{% url 'penalite_detail' penalite.id %}{% else %}#{% endif %}">Voir</a>
+
+
+                                       
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex justify-between items-center mt-6">
+                <div class="text-sm text-gray-600 dark:text-gray-300">
+                    Page <span x-text="currentPage"></span> sur <span x-text="totalPages"></span>
+                </div>
+                <div class="btn-group">
+                    <button 
+                        @click="previousPage" 
+                        :disabled="currentPage === 1"
+                        class="btn btn-outline"
+                    >
+                        Précédent
+                    </button>
+                    <button 
+                        @click="nextPage" 
+                        :disabled="currentPage === totalPages"
+                        class="btn btn-outline"
+                    >
+                        Suivant
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function penaltiesManager() {
+    return {
+        penalties: JSON.parse('{{ penalties_json|safe }}'),
+        searchTerm: '',
+        filterType: '',
+        sortBy: 'date',
+        currentPage: 1,
+        itemsPerPage: 10,
+
+        get filteredAndSortedPenalties() {
+            let filtered = this.penalties.filter(p => 
+                (!this.searchTerm || p.utilisateur.toLowerCase().includes(this.searchTerm.toLowerCase())) &&
+                (!this.filterType || p.type === this.filterType)
+            );
+
+            filtered.sort((a, b) => {
+                switch(this.sortBy) {
+                    case 'date': return new Date(b.date) - new Date(a.date);
+                    case 'gravite': return this.graviteOrder(b.gravite) - this.graviteOrder(a.gravite);
+                    case 'utilisateur': return a.utilisateur.localeCompare(b.utilisateur);
+                }
+                return 0;
+            });
+
+            const start = (this.currentPage - 1) * this.itemsPerPage;
+            const end = start + this.itemsPerPage;
+            return filtered.slice(start, end);
+        },
+
+        get totalPages() {
+            return Math.ceil(this.penalties.length / this.itemsPerPage);
+        },
+
+        graviteOrder(gravite) {
+            switch(gravite) {
+                case 'Faible': return 1;
+                case 'Moyenne': return 2;
+                case 'Élevée': return 3;
+                default: return 0;
+            }
+        },
+
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++;
+            }
+        },
+
+        previousPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+            }
+        },
+
+        refuserPenalite(id) {
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            fetch(`/refuser_penalite/${id}`, { 
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    this.penalties = this.penalties.filter(p => p.id !== id);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
+}
+</script>
+{% endblock %}

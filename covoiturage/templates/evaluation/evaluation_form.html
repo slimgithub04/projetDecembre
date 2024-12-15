@@ -1,0 +1,151 @@
+{% extends 'evaluation/base5.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}Évaluation du Trajet{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background-color: #f4f6f9;
+        font-family: 'Arial', sans-serif;
+    }
+    .evaluation-container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .score-box {
+        background-color: #e9ecef;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 30px;
+        transition: all 0.3s ease;
+    }
+    .score-display {
+        font-size: 3rem;
+        font-weight: bold;
+        color: #007bff;
+    }
+    .star-rating {
+        unicode-bidi: bidi-override;
+        direction: rtl;
+        text-align: center;
+    }
+    .star-rating > label {
+        display: inline-block;
+        position: relative;
+        width: 1.1em;
+        font-size: 2rem;
+        color: #ddd;
+        cursor: pointer;
+    }
+    .star-rating > label:hover,
+    .star-rating > label:hover ~ label,
+    .star-rating > input:checked ~ label {
+        color: #ffc107;
+    }
+    .star-rating > input {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="evaluation-container">
+        <form method="post" id="evaluationForm">
+            {% csrf_token %}
+            
+            <!-- Score Display Box -->
+            <div class="score-box" id="scoreBox">
+                <h3>Score Global</h3>
+                <div class="score-display" id="globalScore">0/100</div>
+                <small class="text-muted">Basé sur vos évaluations</small>
+            </div>
+
+            <!-- Communication Rating -->
+            <div class="mb-4">
+                <label class="form-label">Communication</label>
+                <div class="star-rating">
+                    {% for i in "10"|make_list|slice:":10" %}
+                        <input type="radio" 
+                               id="communication{{ i|reverse_number1 }}" 
+                               name="communication" 
+                               value="{{ i|reverse_number1 }}"
+                               onchange="updateScore()">
+                        <label for="communication{{ i|reverse_number1 }}">★</label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Punctuality Rating -->
+            <div class="mb-4">
+                <label class="form-label">Ponctualité du Conducteur</label>
+                <div class="star-rating">
+                    {% for i in "10"|make_list|slice:":10" %}
+                        <input type="radio" 
+                               id="ponctualite{{ i|reverse_number }}" 
+                               name="ponctualite" 
+                               value="{{ i|reverse_number }}"
+                               onchange="updateScore()">
+                        <label for="ponctualite{{ i|reverse_number }}">★</label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Comfort Rating -->
+            <div class="mb-4">
+                <label class="form-label">Confort du Trajet</label>
+                <div class="star-rating">
+                    {% for i in "10"|make_list|slice:":10" %}
+                        <input type="radio" 
+                               id="confort{{ i|reverse_number }}" 
+                               name="confort" 
+                               value="{{ i|reverse_number }}"
+                               onchange="updateScore()">
+                        <label for="confort{{ i|reverse_number }}">★</label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mt-3">Soumettre l'Évaluation</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function updateScore() {
+        // Get selected ratings
+        const communication = document.querySelector('input[name="communication"]:checked')?.value || 0;
+        const ponctualite = document.querySelector('input[name="ponctualite"]:checked')?.value || 0;
+        const confort = document.querySelector('input[name="confort"]:checked')?.value || 0;
+
+        // Calculate global score (average of three ratings)
+        const globalScore = Math.round(
+            (parseFloat(communication) + 
+             parseFloat(ponctualite) + 
+             parseFloat(confort)) / 3 * 10
+        );
+
+        // Update score display
+        document.getElementById('globalScore').textContent = `${globalScore}/100`;
+
+        // Optional: Add color coding to score box
+        const scoreBox = document.getElementById('scoreBox');
+        if (globalScore >= 80) {
+            scoreBox.style.backgroundColor = '#d4edda';
+        } else if (globalScore >= 60) {
+            scoreBox.style.backgroundColor = '#fff3cd';
+        } else {
+            scoreBox.style.backgroundColor = '#f8d7da';
+        }
+    }
+</script>
+{% endblock %}

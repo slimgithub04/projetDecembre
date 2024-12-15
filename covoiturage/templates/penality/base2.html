@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+{% load static %}
+<script src="{% static 'js/chart.min.js' %}"></script>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard des Pénalités{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+</head>
+<body class="dark-theme">
+    <nav>
+        <div class="logo">Dashboard Pénalités<p></p></div>
+    </nav>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    <script src="{% static 'js/dashboard.js' %}"></script>
+    <style>nav {
+        background-color: #333; /* Fond sombre de la barre de navigation */
+        padding: 10px 20px; /* Espacement autour du contenu */
+    }
+    
+    .logo {
+        font-size: 24px; /* Taille du texte */
+        font-weight: bold; /* Texte en gras */
+        color: #fff; /* Couleur du texte en blanc pour le contraste */
+        letter-spacing: 2px; /* Espacement des lettres */
+        text-transform: uppercase; /* Texte en majuscules */
+        text-align: center; /* Centrer le texte */
+        padding: 10px; /* Espacement interne */
+        background-color: rgba(0, 0, 0, 0.6); /* Fond sombre derrière le texte avec transparence */
+        border-radius: 5px; /* Bords arrondis pour un effet plus doux */
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5); /* Ombre autour du texte */
+    }
+    
+    .logo p {
+        margin: 0; /* Éliminer les marges par défaut du paragraphe */
+    }
+    </style>
+</body>
+</html>

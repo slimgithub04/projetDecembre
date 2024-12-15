@@ -1,0 +1,26 @@
+{% extends 'Home/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    {% if not confirmed %}
+        <h2>Confirmer la soumission</h2>
+        <p>Êtes-vous sûr de vouloir soumettre ce commentaire ?</p>
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" name="confirm" value="yes" class="btn btn-success">Oui, soumettre</button>
+            <a href="{% url 'create_commentaire' %}" class="btn btn-danger">Non, annuler</a>
+        </form>
+    {% else %}
+        <h2>Votre commentaire a été soumis avec succès !</h2>
+        <p>Merci d'avoir partagé vos idées. Nous apprécions votre contribution.</p>
+        <p>Que voulez-vous faire ensuite ?</p>
+        
+        <div class="btn-group mt-3">
+            <a href="{% url 'create_commentaire' %}" class="btn btn-primary mt-3">Ajouter un autre commentaire</a>
+            <a href="{% url 'mes_commentaires' %}" class="btn btn-primary">Voir mes commentaires</a>
+            <a href="{% url 'home1' %}" class="btn btn-secondary">Revenir à l'accueil</a>
+            <a href="{% url 'tous_les_commentaires' %}" class="btn btn-success">Voir tous les commentaires</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
