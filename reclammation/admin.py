@@ -162,7 +162,6 @@ class ReclamationAdmin(ImportExportModelAdmin):
 
 from django.contrib import admin
 from .models import AnalyseReclamationAvecAI
-from django.utils.html import format_html
 from django.db.models import Avg
 
 class AnalyseReclamationAvecAIAdmin(admin.ModelAdmin):
@@ -170,20 +169,14 @@ class AnalyseReclamationAvecAIAdmin(admin.ModelAdmin):
     list_filter = ('validee', 'utilisateurcible', 'date_analyse')  # Filtres disponibles dans l'interface admin
     search_fields = ('reclamation__id', 'utilisateurcible__username')  # Recherche par ID de réclamation ou par utilisateur cible
     ordering = ('-date_analyse',)  # Tri par date d'analyse, de la plus récente à la plus ancienne
+    list_editable = ('validee', 'utilisateurcible')  # Permet la modification de 'validee' et 'utilisateurcible' directement depuis la liste
 
-    # Affichage de la moyenne des scores d'analyse dans la liste
+    # Affichage de la moyenne des scores d'analyse sous forme de texte
     def average_score_display(self, obj):
         avg_score = AnalyseReclamationAvecAI.objects.all().aggregate(Avg('score_analyse'))['score_analyse__avg']
-        if avg_score is None:
-            avg_score = 0
-        return format_html('<strong>{:.2f}</strong>', avg_score)
+        return round(avg_score, 2) if avg_score else 0  # Renvoie 0 si aucun score n'est disponible
 
     average_score_display.short_description = 'Moyenne des scores d\'analyse'
-
-    # Fonction de sauvegarde personnalisée (si nécessaire pour ajouter de la logique avant la sauvegarde)
-    def save_model(self, request, obj, form, change):
-        # Vous pouvez ajouter des validations supplémentaires ou des actions avant la sauvegarde ici
-        super().save_model(request, obj, form, change)
 
     # Personnalisation de l'affichage pour l'interface changelist
     def changelist_view(self, request, extra_context=None):

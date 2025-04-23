@@ -18,7 +18,7 @@ class Commentaire(models.Model):
     gif = models.ImageField(upload_to='commentaires/gifs/', null=True, blank=True)
 
     def __str__(self):
-        return f"Commentaire de {self.utilisateur} pour évaluation {self.evaluation or 'N/A'} sur trajet {self.trajet or 'N/A'}"
+        return f"Commentaire de {self.utilisateur}  sur trajet {self.trajet or 'N/A'}"
 
     class Meta:
         ordering = ['date_commentaire']

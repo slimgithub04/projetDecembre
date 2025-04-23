@@ -1,14 +1,18 @@
 {
-  "name": "covoiturage",
+  "name": "waselni",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": {
+    "name": "Selim Manai",
+    "email": "slimmenei20@gmail.com",
+    "url": "https://github.com/slimgithub04"
+  },
+  "license": "MIT",
+  "description": "AI-Powered Carpooling Platform for Tunisia",
   "devDependencies": {
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
@@ -16,5 +20,9 @@
   },
   "dependencies": {
     "chart.js": "^4.4.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/slimgithub04/waselni.git"
   }
 }

@@ -167,7 +167,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'slimmenei20@gmail.com'  # Votre adresse e-mail
-EMAIL_HOST_PASSWORD ='bvds vcvi glvd vwcu'  # Remplacez par votre mot de passe Gmail ou mot de passe d'application
+EMAIL_HOST_PASSWORD ='wfuk kuto ygnv lprp'  # Remplacez par votre mot de passe Gmail ou mot de passe d'application
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
